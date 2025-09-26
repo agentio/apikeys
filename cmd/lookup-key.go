@@ -16,9 +16,8 @@ func lookupKeyCmd() *cobra.Command {
 		Short: "Lookup key",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			client := sidecar.NewClient(address)
 			response, err := sidecar.CallUnary[apikeyspb.LookupKeyRequest, apikeyspb.LookupKeyResponse](
-				client,
+				sidecar.NewClient(address),
 				"/google.api.apikeys.v2.ApiKeys/LookupKey",
 				sidecar.NewRequest(&apikeyspb.LookupKeyRequest{
 					KeyString: args[0],

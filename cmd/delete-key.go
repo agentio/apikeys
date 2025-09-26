@@ -17,9 +17,8 @@ func deleteKeyCmd() *cobra.Command {
 		Short: "Delete key",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			client := sidecar.NewClient(address)
 			operation, err := sidecar.CallUnary[apikeyspb.DeleteKeyRequest, longrunningpb.Operation](
-				client,
+				sidecar.NewClient(address),
 				"/google.api.apikeys.v2.ApiKeys/DeleteKey",
 				sidecar.NewRequest(&apikeyspb.DeleteKeyRequest{
 					Name: args[0],

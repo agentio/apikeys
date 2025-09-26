@@ -22,7 +22,6 @@ func createKeyCmd() *cobra.Command {
 		Short: "Create key",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			client := sidecar.NewClient(address)
 			if parent == "" {
 				return errors.New("--parent must be specified")
 			}
@@ -30,7 +29,7 @@ func createKeyCmd() *cobra.Command {
 				return errors.New("--service must be specified")
 			}
 			response, err := sidecar.CallUnary[apikeyspb.CreateKeyRequest, longrunningpb.Operation](
-				client,
+				sidecar.NewClient(address),
 				"/google.api.apikeys.v2.ApiKeys/CreateKey",
 				sidecar.NewRequest(&apikeyspb.CreateKeyRequest{
 					Parent: parent,

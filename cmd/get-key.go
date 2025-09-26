@@ -16,9 +16,8 @@ func getKeyCmd() *cobra.Command {
 		Short: "Get key",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			client := sidecar.NewClient(address)
 			response, err := sidecar.CallUnary[apikeyspb.GetKeyRequest, apikeyspb.Key](
-				client,
+				sidecar.NewClient(address),
 				"/google.api.apikeys.v2.ApiKeys/GetKey",
 				sidecar.NewRequest(&apikeyspb.GetKeyRequest{
 					Name: args[0],

@@ -17,11 +17,10 @@ func listKeysCmd() *cobra.Command {
 		Short: "List keys",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			client := sidecar.NewClient(address)
 			nextPageToken := ""
 			for {
 				response, err := sidecar.CallUnary[apikeyspb.ListKeysRequest, apikeyspb.ListKeysResponse](
-					client,
+					sidecar.NewClient(address),
 					"/google.api.apikeys.v2.ApiKeys/ListKeys",
 					sidecar.NewRequest(&apikeyspb.ListKeysRequest{
 						Parent:    "projects/" + args[0] + "/locations/global",

@@ -16,9 +16,8 @@ func getOperationCmd() *cobra.Command {
 		Short: "Get operation",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			client := sidecar.NewClient(address)
 			response, err := sidecar.CallUnary[longrunningpb.GetOperationRequest, longrunningpb.Operation](
-				client,
+				sidecar.NewClient(address),
 				"/google.longrunning.Operations/GetOperation",
 				sidecar.NewRequest(&longrunningpb.GetOperationRequest{
 					Name: args[0],

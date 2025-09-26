@@ -18,7 +18,6 @@ func updateKeyCmd() *cobra.Command {
 		Short: "Update key",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			client := sidecar.NewClient(address)
 			b, err := os.ReadFile(args[0])
 			if err != nil {
 				return err
@@ -29,7 +28,7 @@ func updateKeyCmd() *cobra.Command {
 				return err
 			}
 			response, err := sidecar.CallUnary[apikeyspb.UpdateKeyRequest, longrunningpb.Operation](
-				client,
+				sidecar.NewClient(address),
 				"/google.api.apikeys.v2.ApiKeys/UpdateKey",
 				sidecar.NewRequest(&apikeyspb.UpdateKeyRequest{
 					Key: &key,
