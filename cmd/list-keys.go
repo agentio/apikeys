@@ -31,7 +31,7 @@ func listKeysCmd() *cobra.Command {
 				if err != nil {
 					return err
 				}
-				b, err := protojson.Marshal(response.Msg)
+				b, err := protojson.MarshalOptions{Indent: "  "}.Marshal(response.Msg)
 				if err != nil {
 					return err
 				}

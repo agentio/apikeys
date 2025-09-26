@@ -4,38 +4,36 @@ import (
 	"fmt"
 
 	"cloud.google.com/go/longrunning/autogen/longrunningpb"
-	"github.com/agentio/apikeys/pkg/client"
+	"github.com/agentio/sidecar"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
 func getOperationCmd() *cobra.Command {
-	var format string
+	var address string
 	cmd := &cobra.Command{
 		Use:   "get-operation OPERATION",
 		Short: "Get operation",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c, ctx, err := client.ApiKeysLROClient(cmd.Context())
+			client := sidecar.NewClient(address)
+			response, err := sidecar.CallUnary[longrunningpb.GetOperationRequest, longrunningpb.Operation](
+				client,
+				"/google.longrunning.Operations/GetOperation",
+				sidecar.NewRequest(&longrunningpb.GetOperationRequest{
+					Name: args[0],
+				}))
 			if err != nil {
 				return err
 			}
-			response, err := c.GetOperation(ctx, &longrunningpb.GetOperationRequest{
-				Name: args[0],
-			})
+			b, err := protojson.MarshalOptions{Indent: "  "}.Marshal(response.Msg)
 			if err != nil {
 				return err
 			}
-			if format == "json" {
-				b, err := protojson.Marshal(response)
-				if err != nil {
-					return err
-				}
-				fmt.Fprintf(cmd.OutOrStdout(), "%s\n", string(b))
-			}
+			fmt.Fprintf(cmd.OutOrStdout(), "%s\n", string(b))
 			return nil
 		},
 	}
-	cmd.Flags().StringVar(&format, "format", "json", "output format")
+	cmd.Flags().StringVarP(&address, "address", "a", "localhost:4444", "service address")
 	return cmd
 }

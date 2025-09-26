@@ -5,13 +5,14 @@ import (
 	"fmt"
 
 	"cloud.google.com/go/apikeys/apiv2/apikeyspb"
-	"github.com/agentio/apikeys/pkg/client"
+	"cloud.google.com/go/longrunning/autogen/longrunningpb"
+	"github.com/agentio/sidecar"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
 func createKeyCmd() *cobra.Command {
-	var format string
+	var address string
 	var parent string
 	var service string
 	var keyid string
@@ -21,40 +22,38 @@ func createKeyCmd() *cobra.Command {
 		Short: "Create key",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c, ctx, err := client.ApiKeysClient(cmd.Context())
-			if err != nil {
-				return err
-			}
+			client := sidecar.NewClient(address)
 			if parent == "" {
 				return errors.New("--parent must be specified")
 			}
 			if service == "" {
 				return errors.New("--service must be specified")
 			}
-			response, err := c.CreateKey(ctx, &apikeyspb.CreateKeyRequest{
-				Parent: parent,
-				Key: &apikeyspb.Key{
-					DisplayName: displayName,
-					Restrictions: &apikeyspb.Restrictions{
-						ApiTargets: []*apikeyspb.ApiTarget{
-							{
-								Service: service,
+			response, err := sidecar.CallUnary[apikeyspb.CreateKeyRequest, longrunningpb.Operation](
+				client,
+				"/google.api.apikeys.v2.ApiKeys/CreateKey",
+				sidecar.NewRequest(&apikeyspb.CreateKeyRequest{
+					Parent: parent,
+					Key: &apikeyspb.Key{
+						DisplayName: displayName,
+						Restrictions: &apikeyspb.Restrictions{
+							ApiTargets: []*apikeyspb.ApiTarget{
+								{
+									Service: service,
+								},
 							},
 						},
 					},
-				},
-				KeyId: keyid,
-			})
+					KeyId: keyid,
+				}))
 			if err != nil {
 				return err
 			}
-			if format == "json" {
-				b, err := protojson.Marshal(response)
-				if err != nil {
-					return err
-				}
-				fmt.Fprintf(cmd.OutOrStdout(), "%s\n", string(b))
+			b, err := protojson.MarshalOptions{Indent: "  "}.Marshal(response.Msg)
+			if err != nil {
+				return err
 			}
+			fmt.Fprintf(cmd.OutOrStdout(), "%s\n", string(b))
 			return nil
 		},
 	}
@@ -62,6 +61,6 @@ func createKeyCmd() *cobra.Command {
 	cmd.Flags().StringVar(&service, "service", "", "service to be used with this key")
 	cmd.Flags().StringVar(&keyid, "keyid", "", "key id")
 	cmd.Flags().StringVar(&displayName, "display-name", "", "display name")
-	cmd.Flags().StringVar(&format, "format", "json", "output format")
+	cmd.Flags().StringVarP(&address, "address", "a", "localhost:4444", "service address")
 	return cmd
 }
