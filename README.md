@@ -1,7 +1,7 @@
 # apikeys
 
 `apikeys` is a command line tool for working with Google's
-[API Keys](https://cloud.google.com/service-infrastructure/docs/overview) API.
+[API Keys API](https://cloud.google.com/api-keys/docs/reference/rpc).
 
 The `apikeys` tool uses [Sidecar](https://github.com/agentio/sidecar) and an
 authenticating API proxy ([IO](https://agent.io/posts/io)) to make gRPC
