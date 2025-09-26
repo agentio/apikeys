@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"cloud.google.com/go/apikeys/apiv2/apikeyspb"
-	"cloud.google.com/go/longrunning/autogen/longrunningpb"
+	"github.com/agentio/apikeys/genproto/apikeys/apiv2/apikeyspb"
+	"github.com/agentio/apikeys/genproto/longrunningpb"
 	"github.com/agentio/sidecar"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"

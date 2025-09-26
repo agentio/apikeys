@@ -6,7 +6,7 @@ import (
 	"github.com/agentio/sidecar"
 	"github.com/spf13/cobra"
 
-	"cloud.google.com/go/apikeys/apiv2/apikeyspb"
+	"github.com/agentio/apikeys/genproto/apikeys/apiv2/apikeyspb"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 

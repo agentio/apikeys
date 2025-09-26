@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"cloud.google.com/go/longrunning/autogen/longrunningpb"
+	"github.com/agentio/apikeys/genproto/longrunningpb"
 	"github.com/agentio/sidecar"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
