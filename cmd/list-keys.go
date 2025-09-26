@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/agentio/apikeys/pkg/client"
+	"github.com/agentio/sidecar"
 	"github.com/spf13/cobra"
 
 	"cloud.google.com/go/apikeys/apiv2/apikeyspb"
@@ -11,34 +11,32 @@ import (
 )
 
 func listKeysCmd() *cobra.Command {
-	var format string
+	var address string
 	cmd := &cobra.Command{
 		Use:   "list-keys PROJECT",
 		Short: "List keys",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c, ctx, err := client.ApiKeysClient(cmd.Context())
-			if err != nil {
-				return err
-			}
+			client := sidecar.NewClient(address)
 			nextPageToken := ""
 			for {
-				response, err := c.ListKeys(ctx, &apikeyspb.ListKeysRequest{
-					Parent:    "projects/" + args[0] + "/locations/global",
-					PageSize:  100,
-					PageToken: nextPageToken,
-				})
+				response, err := sidecar.CallUnary[apikeyspb.ListKeysRequest, apikeyspb.ListKeysResponse](
+					client,
+					"/google.api.apikeys.v2.ApiKeys/ListKeys",
+					sidecar.NewRequest(&apikeyspb.ListKeysRequest{
+						Parent:    "projects/" + args[0] + "/locations/global",
+						PageSize:  100,
+						PageToken: nextPageToken,
+					}))
 				if err != nil {
 					return err
 				}
-				if format == "json" {
-					b, err := protojson.Marshal(response)
-					if err != nil {
-						return err
-					}
-					fmt.Fprintf(cmd.OutOrStdout(), "%s\n", string(b))
+				b, err := protojson.Marshal(response.Msg)
+				if err != nil {
+					return err
 				}
-				nextPageToken = response.NextPageToken
+				fmt.Fprintf(cmd.OutOrStdout(), "%s\n", string(b))
+				nextPageToken = response.Msg.NextPageToken
 				if nextPageToken == "" {
 					break
 				}
@@ -46,6 +44,6 @@ func listKeysCmd() *cobra.Command {
 			return nil
 		},
 	}
-	cmd.Flags().StringVar(&format, "format", "json", "output format")
+	cmd.Flags().StringVarP(&address, "address", "a", "localhost:4444", "service address")
 	return cmd
 }

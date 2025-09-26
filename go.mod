@@ -5,11 +5,12 @@ go 1.25.1
 require (
 	cloud.google.com/go/apikeys v1.1.10
 	cloud.google.com/go/longrunning v0.6.0
-	github.com/spf13/cobra v1.8.1
+	github.com/agentio/sidecar v0.1.11
+	github.com/spf13/cobra v1.10.1
 	golang.org/x/oauth2 v0.22.0
 	google.golang.org/api v0.196.0
 	google.golang.org/grpc v1.66.0
-	google.golang.org/protobuf v1.34.2
+	google.golang.org/protobuf v1.36.9
 )
 
 require (
@@ -24,7 +25,7 @@ require (
 	github.com/googleapis/enterprise-certificate-proxy v0.3.3 // indirect
 	github.com/googleapis/gax-go/v2 v2.13.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/pflag v1.0.9 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.54.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.54.0 // indirect
