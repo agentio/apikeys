@@ -29,6 +29,7 @@ func createKeyCmd() *cobra.Command {
 				return errors.New("--service must be specified")
 			}
 			response, err := sidecar.CallUnary[apikeyspb.CreateKeyRequest, longrunningpb.Operation](
+				cmd.Context(),
 				sidecar.NewClient(address),
 				"/google.api.apikeys.v2.ApiKeys/CreateKey",
 				sidecar.NewRequest(&apikeyspb.CreateKeyRequest{

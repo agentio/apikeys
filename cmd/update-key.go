@@ -28,6 +28,7 @@ func updateKeyCmd() *cobra.Command {
 				return err
 			}
 			response, err := sidecar.CallUnary[apikeyspb.UpdateKeyRequest, longrunningpb.Operation](
+				cmd.Context(),
 				sidecar.NewClient(address),
 				"/google.api.apikeys.v2.ApiKeys/UpdateKey",
 				sidecar.NewRequest(&apikeyspb.UpdateKeyRequest{

@@ -20,6 +20,7 @@ func listKeysCmd() *cobra.Command {
 			nextPageToken := ""
 			for {
 				response, err := sidecar.CallUnary[apikeyspb.ListKeysRequest, apikeyspb.ListKeysResponse](
+					cmd.Context(),
 					sidecar.NewClient(address),
 					"/google.api.apikeys.v2.ApiKeys/ListKeys",
 					sidecar.NewRequest(&apikeyspb.ListKeysRequest{

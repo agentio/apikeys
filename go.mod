@@ -3,7 +3,7 @@ module github.com/agentio/apikeys
 go 1.25.1
 
 require (
-	github.com/agentio/sidecar v0.1.11
+	github.com/agentio/sidecar v0.1.12
 	github.com/spf13/cobra v1.10.1
 	google.golang.org/protobuf v1.36.9
 )
